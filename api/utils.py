@@ -40,3 +40,15 @@ def salvar_reservas(data):
         carros_reservados.append(reserva)
 
     return Reserva.objects.bulk_create(carros_reservados)
+
+
+def consultar_reservas(data):
+    agora = timezone.now()
+    agora = agora - timezone.timedelta(seconds=120)
+    consulta = Consulta.objects.filter(
+        data_consultada=data,
+        expirada=False,
+        realizada_em__gt=agora
+    )
+    consulta.update(expirada=True)
+    return consulta.first()
